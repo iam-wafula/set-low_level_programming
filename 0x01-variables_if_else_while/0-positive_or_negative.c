@@ -5,7 +5,6 @@
 /**
  * main - Entry point
  *
- * Description: prints whether n is positive, zero or negative
  * Return: 0 (Success)
  */
 int main(void)
