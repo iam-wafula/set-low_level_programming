@@ -3,7 +3,7 @@
 /**
  * main - prints _putchar
  *
- * Return: Always 0.
+ * Return: Always 0
  */
 int main(void)
 {
@@ -11,9 +11,7 @@ int main(void)
     int i;
 
     for (i = 0; text[i] != '\0'; i++)
-    {
         _putchar(text[i]);
-    }
 
     _putchar('\n');
 
