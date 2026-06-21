@@ -2,41 +2,43 @@
 #include <stdio.h>
 
 /**
- * print_listint_safe - prints a listint_t list safely (handles loops)
+ * print_listint_safe - prints a list safely (handles loops)
  * @head: pointer to list
  *
  * Return: number of nodes printed
  */
 size_t print_listint_safe(const listint_t *head)
 {
-	const listint_t *current;
-	const listint_t *runner;
+	const listint_t *slow, *fast;
 	size_t count = 0;
 
-	current = head;
+	if (head == NULL)
+		return (0);
 
-	while (current != NULL)
+	slow = head;
+	fast = head;
+
+	while (fast != NULL && fast->next != NULL)
 	{
-		runner = head;
+		printf("[%p] %d\n", (void *)slow, slow->n);
+		count++;
 
-		/* check if current node was seen before */
-		while (runner < current)
-		{
-			if (runner == current)
-				break;
-			runner = runner->next;
-		}
+		slow = slow->next;
+		fast = fast->next->next;
 
-		/* loop detected */
-		if (runner != current)
+		if (slow == fast)
 		{
-			printf("-> [%p] %d\n", (void *)current, current->n);
+			printf("-> [%p] %d\n", (void *)slow, slow->n);
 			return (count);
 		}
+	}
 
-		printf("[%p] %d\n", (void *)current, current->n);
+	/* print remaining linear part */
+	while (slow != NULL)
+	{
+		printf("[%p] %d\n", (void *)slow, slow->n);
 		count++;
-		current = current->next;
+		slow = slow->next;
 	}
 
 	return (count);

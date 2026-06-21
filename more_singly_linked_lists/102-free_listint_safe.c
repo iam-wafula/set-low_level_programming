@@ -1,34 +1,68 @@
-#include "lists.h"
+d#include "lists.h"
 #include <stdlib.h>
 
 /**
- * free_listint_safe - frees a listint_t list safely (handles loops)
- * @h: pointer to pointer of head
+ * free_listint_safe - frees a list safely (handles loops)
+ * @h: pointer to head pointer
  *
  * Return: number of nodes freed
  */
 size_t free_listint_safe(listint_t **h)
 {
-	listint_t *tmp;
-	listint_t *next;
+	listint_t *slow, *fast, *tmp;
 	size_t count = 0;
 
 	if (h == NULL || *h == NULL)
 		return (0);
 
-	while (*h != NULL)
+	slow = *h;
+	fast = *h;
+
+	/* detect loop using Floyd */
+	while (fast && fast->next)
 	{
-		tmp = *h;
-		next = tmp->next;
+		slow = slow->next;
+		fast = fast->next->next;
+
+		if (slow == fast)
+			break;
+	}
+
+	/* no loop case */
+	if (slow != fast)
+	{
+		while (*h)
+		{
+			tmp = *h;
+			*h = (*h)->next;
+			free(tmp);
+			count++;
+		}
+		return (count);
+	}
+
+	/* loop exists → break it safely */
+	slow = *h;
+
+	while (slow != fast)
+	{
+		tmp = slow;
+		slow = slow->next;
 		free(tmp);
 		count++;
+	}
 
-		/* break loop detection by checking if next is already freed path */
-		*h = next;
+	/* now free loop part */
+	while (slow)
+	{
+		tmp = slow;
+		slow = slow->next;
 
-		/* safety stop: if we somehow loop back to freed memory */
-		if (next == NULL)
+		if (tmp <= slow)
 			break;
+
+		free(tmp);
+		count++;
 	}
 
 	*h = NULL;

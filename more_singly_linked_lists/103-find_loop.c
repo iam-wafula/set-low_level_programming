@@ -8,8 +8,7 @@
  */
 listint_t *find_listint_loop(listint_t *head)
 {
-	listint_t *slow;
-	listint_t *fast;
+	listint_t *slow, *fast;
 
 	if (head == NULL)
 		return (NULL);
@@ -17,26 +16,28 @@ listint_t *find_listint_loop(listint_t *head)
 	slow = head;
 	fast = head;
 
-	/* Step 1: detect if loop exists */
-	while (fast != NULL && fast->next != NULL)
+	/* Step 1: detect loop */
+	while (fast && fast->next)
 	{
 		slow = slow->next;
 		fast = fast->next->next;
 
 		if (slow == fast)
-		{
-			/* Step 2: find loop start */
-			slow = head;
-
-			while (slow != fast)
-			{
-				slow = slow->next;
-				fast = fast->next;
-			}
-
-			return (slow);
-		}
+			break;
 	}
 
-	return (NULL);
+	/* no loop */
+	if (fast == NULL || fast->next == NULL)
+		return (NULL);
+
+	/* Step 2: find loop start */
+	slow = head;
+
+	while (slow != fast)
+	{
+		slow = slow->next;
+		fast = fast->next;
+	}
+
+	return (slow);
 }
